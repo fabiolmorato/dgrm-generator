@@ -10,12 +10,18 @@ typedef struct Mote
     double z;
     unsigned int id;
     char* tipo;
-    struct Mote* enlaces;
+    unsigned int numenlaces;
+    unsigned int* enlaces;
 }
 Mote;
 
 XML* GerarBaseCSC(void);
 XML* SimulationTag(XML*, char*, char*);
 XML* BasePlugin(XML*, char*, char*, char*, char*, char*, char*);
+
+Mote* GerarMotes(unsigned int, unsigned int);
+
+void GerarEnlaces(Mote*, unsigned int, unsigned int);
+void AdicionarMotes(XML*, Mote*, unsigned int);
 
 #endif

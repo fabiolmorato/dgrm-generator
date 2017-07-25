@@ -1,2 +1,2 @@
 main: main.c
-	gcc -o main main.c CSC.c XML.c -lpthread -Wall -Werror -Wshadow -std=c11
+	gcc -o main main.c CSC.c XML.c helpers.c -lm -Wall -Werror -Wshadow -std=c11

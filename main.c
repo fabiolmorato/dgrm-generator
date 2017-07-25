@@ -8,18 +8,14 @@
 int main(int argc, char** argv)
 {
     XML* raiz;
-
-    if(argc < 3)
-    {
-        printf("Uso: %s -o <nome> [-c <configuracao>]\n", argv[0]);
-        printf("Digite %s -h para obter ajuda.\n", argv[0]);
-        return 1;
-    }
-
     raiz = GerarBaseCSC();
 
+    Mote* m = GerarMotes(50,50);
+    GerarEnlaces(m, 50, 50);
 
-    ImprimirXML(raiz);
+    AdicionarMotes(raiz, m, 50);
+
+    //ImprimirXML(raiz);
 
     return 0;
 }
