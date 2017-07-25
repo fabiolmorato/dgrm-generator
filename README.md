@@ -5,7 +5,7 @@ Generates a Cooja simulation using Direct Graph Radio Medium as Radio Medium. Us
 ```make main```
 
 ## Running
-Firstly, create a simulation in Cooja using DGRM as Radio Medium and create two mote types using Cooja Motes. Use the files in contiki/examples/ipv6/rpl-udp (udp-server.c and udp-client.c) and note down the identifier for those mote types (can be seen in compilation output and inside .csc file). It will be something like mtypeNUMBER.
+First create a simulation in Cooja using DGRM as Radio Medium and create two mote types using Cooja Motes. Use the files in contiki/examples/ipv6/rpl-udp (udp-server.c and udp-client.c) and note down the identifier for those mote types (can be seen in compilation output and inside .csc file). It will be something like mtypeNUMBER.
 
 After that, run the dgrm-generator program (syntax shown below), insert the number of motes desired and then those two mote types identifiers.
 
