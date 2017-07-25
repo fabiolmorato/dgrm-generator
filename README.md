@@ -1,4 +1,4 @@
-# gerador-dgrm
+# dgrm-generator
 Generates a Cooja simulation using Direct Graph Radio Medium as Radio Medium. Using Cooja mote type, it has two different motes: server mote and client mote. There will be one server mote and N client motes. This program is used at [Simulações DGRM](https://github.com/fabiolmorato/simulacoes-dgrm).
 
 ## Compiling
