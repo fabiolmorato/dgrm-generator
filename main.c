@@ -25,7 +25,7 @@ int main(int argc, char** argv)
         printf("The program will prompt the maximum and minimum distance when setting mote positions. This is not the signal range!\n");
         printf("Small values with a large amount of motes can generate simulations will probably generate a simulation in which the motes will be grouped in a small space.\n");
         printf("Big values may lead to generating a position in which a mote can be alone and have no links whatsoever, so be careful.\n");
-        printf("Altough there are some verifications on the run, the program may execute badly due to memory leaks or an unknown bug.\n");
+        printf("Although there are some verifications on the run, the program may execute badly due to memory leaks or an unknown bug.\n");
         printf("The simulation will be saved in the filename indicated when running the program. If motetype identifiers and the program run correctly the simulation is ready to be used on Cooja.\n");
         printf("\n%s <filename.csc> to generate a new simulation.\n", argv[0]);
 
