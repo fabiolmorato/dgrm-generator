@@ -16,7 +16,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if(strcmp(argv[1], "-h") || strcmp(argv[1], "--help") == 0)
+    if(strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
     {
         printf("DGRM Generator\n");
         printf("This program generates DGRM simulations with a specifiec amount of client nodes.\n");
