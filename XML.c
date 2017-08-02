@@ -43,7 +43,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
 
     if(pai->prox == NULL) // não tem filhos
     {
-        xml = (XML*) calloc(1, sizeof(XML));
+        xml = calloc(1, sizeof(XML));
         if(xml == NULL)
         {
             printf("No memory for new XML tag!\n");
@@ -54,7 +54,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
     }
     else // tem filhos
     {
-        pai->prox = (XML*) realloc(pai->prox, (pai->numfilhos + 1) * sizeof(XML));
+        pai->prox = realloc(pai->prox, (pai->numfilhos + 1) * sizeof(XML));
         if(pai->prox == NULL) return NULL; // problema de alocação de memória
 
         xml = &pai->prox[pai->numfilhos];
