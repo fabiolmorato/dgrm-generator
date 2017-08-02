@@ -32,7 +32,7 @@ char* uitos(unsigned int f)
     return r;
 }
 
-unsigned int BufferAdd(char** buffer, char* add)
+unsigned int BufferAdd(unsigned int* tamanho, char** buffer, char* add)
 {
     if(buffer == NULL) return (unsigned) -1;
     if(add == NULL) return (unsigned) -1;
@@ -40,8 +40,18 @@ unsigned int BufferAdd(char** buffer, char* add)
     unsigned int buflen = (unsigned) strlen(*buffer);
     unsigned int addlen = (unsigned) strlen(add);
 
-    *buffer = realloc(*buffer, buflen + addlen + 1);
-    if(*buffer == NULL) return (unsigned) -1;
+    if(buflen + addlen + 1 >= *tamanho)
+    {
+        *tamanho *= 2;
+        *buffer = (char*) realloc(*buffer, *tamanho * sizeof(char));
+
+        if(*buffer == NULL)
+        {
+            printf("No memory to expand buffer!\n");
+            return (unsigned) -1;
+        }
+    }
+
     sprintf(*buffer, "%s%s", *buffer, add);
 
     return buflen + addlen + 1;

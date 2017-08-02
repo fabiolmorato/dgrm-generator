@@ -38,7 +38,11 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
     if(pai->prox == NULL) // não tem filhos
     {
         xml = (XML*) malloc(sizeof(XML));
-        if(xml == NULL) return NULL; // problema com alocação de memória
+        if(xml == NULL)
+        {
+            printf("No memory for new XML tag!\n");
+            return NULL; // problema com alocação de memória
+        }
 
         pai->prox = xml;
     }

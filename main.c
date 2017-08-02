@@ -39,8 +39,10 @@ int main(int argc, char** argv)
         return 2;
     }
 
+    printf("Creating empty simulation...\n");
     XML* raiz;
     raiz = GerarBaseCSC(); // cria um arquivo de simulação vazio
+    printf("Created!\n");
 
     unsigned int amount = 0;
     unsigned int max = 0;
@@ -68,9 +70,15 @@ int main(int argc, char** argv)
     printf("Client mtype: ");
     char* client_mtype = Read();
 
+    printf("\nCreating motes...");
     Mote* m = GerarMotes(amount, max, min); // cria e configura uma estrutura de motes
-    int** enlaces = GerarEnlaces(m, amount, range, &numenlaces); // configura os enlaces entre os motes
+    printf("Motes created!\n");
 
+    printf("\nCreating links between motes...\n");
+    int** enlaces = GerarEnlaces(m, amount, range, &numenlaces); // configura os enlaces entre os motes
+    printf("Links created!\n");
+
+    printf("\nVeryfing link consistency...\n");
     // verificação de consistência dos enlaces
     for(int i = 0; i < amount; i++)
     {
@@ -79,15 +87,19 @@ int main(int argc, char** argv)
             if(enlaces[i][j] == 1 && enlaces[j][i] != 1) printf("Link table inconsistency!\n");
         }
     }
+    printf("Verified!\n");
 
+    printf("\nAdding motes and links to simulation...\n");
     AdicionarMotes(raiz, m, amount, server_mtype, client_mtype); // adiciona a estrutura de motes à estrutura XML
     AdicionarEnlaces(raiz, enlaces, amount);
+    printf("Added!\n");
+
+    printf("\nGenerating script...\n");
+    GerarScript(raiz, enlaces, m, amount, numenlaces);
 
     ImprimirXML(raiz, fp); // imprime o xml num arquivo
 
     printf("\nCreated simulation %s with %u nodes and %u links.\n", argv[1], amount, numenlaces);
-
-    GerarScript(raiz, enlaces, m, amount, numenlaces);
 
     return 0;
 }

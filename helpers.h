@@ -8,6 +8,6 @@ char* ftoa(float f);
 char* uitos(unsigned int f);
 
 /* Adiciona uma string a uma string anterior. Ambas alocadas dinamicamente. */
-unsigned int BufferAdd(char** buffer, char* add);
+unsigned int BufferAdd(unsigned int*, char** buffer, char* add);
 
 #endif
