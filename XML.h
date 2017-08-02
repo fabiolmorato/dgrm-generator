@@ -49,6 +49,6 @@ void EscreverXML(FILE* f, XML* xml);
 
 /* Função utilizada para debug do programa. Imprime a estrutura XML no terminal
  * hierarquicamente. */
-void ImprimirXML(XML* xml);
+void ImprimirXML(XML* xml, FILE* f);
 
 #endif

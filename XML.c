@@ -108,13 +108,13 @@ void EscreverXML(FILE* f, XML* xml)
 
 /* Função utilizada para debug do programa. Imprime a estrutura XML no terminal
  * hierarquicamente. */
-void ImprimirXML(XML* xml)
+void ImprimirXML(XML* xml, FILE* f)
 {
     if(xml->nivel == 0)
     {
         for(int i = 0; i < xml->numfilhos; i++)
         {
-            if(xml->prox != NULL) ImprimirXML(&xml->prox[i]);
+            if(xml->prox != NULL) ImprimirXML(&xml->prox[i], f);
         }
 
         return;
@@ -122,38 +122,38 @@ void ImprimirXML(XML* xml)
 
     for(int i = 1; i < xml->nivel; i++)
     {
-        putchar(' ');
-        putchar(' ');
+        fputc(' ', f);
+        fputc(' ', f);
     }
 
-    if(xml->tipo == 0x01) printf("<%s />\n", xml->nome);
-    else if(xml->atributos == NULL) printf("<%s>", xml->nome);
-    else printf("<%s %s>", xml->nome, xml->atributos);
+    if(xml->tipo == 0x01) fprintf(f, "<%s />\n", xml->nome);
+    else if(xml->atributos == NULL) fprintf(f, "<%s>", xml->nome);
+    else fprintf(f, "<%s %s>", xml->nome, xml->atributos);
 
-    if(xml->numfilhos != 0) putchar('\n');
+    if(xml->numfilhos != 0) fputc('\n', f);
     if(xml->numfilhos != 0 && xml->valor[0] != '\0')
     {
         for(int i = 0; i < xml->nivel; i++)
         {
-            putchar(' ');
-            putchar(' ');
+            fputc(' ', f);
+            fputc(' ', f);
         }
     }
 
-    if(xml->tipo == 0x00) printf("%s", xml->valor);
-    if(xml->tipo == 0x00 && xml->numfilhos != 0 && xml->valor[0] != '\0') putchar('\n');
+    if(xml->tipo == 0x00) fprintf(f, "%s", xml->valor);
+    if(xml->tipo == 0x00 && xml->numfilhos != 0 && xml->valor[0] != '\0') fputc('\n', f);
 
     for(int i = 0; i < xml->numfilhos; i++)
     {
-        if(xml->prox != NULL) ImprimirXML(&xml->prox[i]);
+        if(xml->prox != NULL) ImprimirXML(&xml->prox[i], f);
     }
 
     if(xml->numfilhos != 0 && xml->tipo == 0x00)
         for(int i = 1; i < xml->nivel; i++)
         {
-            putchar(' ');
-            putchar(' ');
+            fputc(' ', f);
+            fputc(' ', f);
         }
 
-    if(xml->tipo == 0x00) printf("</%s>\n", xml->nome);
+    if(xml->tipo == 0x00) fprintf(f, "</%s>\n", xml->nome);
 }
