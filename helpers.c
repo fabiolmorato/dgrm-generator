@@ -31,3 +31,18 @@ char* uitos(unsigned int f)
     free(buffer);
     return r;
 }
+
+unsigned int BufferAdd(char** buffer, char* add)
+{
+    if(buffer == NULL) return (unsigned) -1;
+    if(add == NULL) return (unsigned) -1;
+
+    unsigned int buflen = (unsigned) strlen(*buffer);
+    unsigned int addlen = (unsigned) strlen(add);
+
+    *buffer = realloc(*buffer, buflen + addlen + 1);
+    if(*buffer == NULL) return (unsigned) -1;
+    sprintf(*buffer, "%s%s", *buffer, add);
+
+    return buflen + addlen + 1;
+}

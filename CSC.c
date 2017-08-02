@@ -7,6 +7,7 @@
 #include <time.h>
 #include <math.h>
 #include <stdbool.h>
+#include <limits.h>
 #include "CSC.h"
 #include "XML.h"
 #include "macros.h"
@@ -427,7 +428,7 @@ Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
 
 /* Esta função recebe a lista (m) de (qtd) motes e faz o link entre eles de
  * acordo com a distância máxima (dist). */
-int** GerarEnlaces(Mote* m, unsigned int qtd, unsigned int dist)
+int** GerarEnlaces(Mote* m, unsigned int qtd, unsigned int dist, unsigned int* num)
 {
     int** tabela = (int**) malloc(qtd * sizeof(int*));
     if(tabela == NULL) return NULL;
@@ -451,9 +452,13 @@ int** GerarEnlaces(Mote* m, unsigned int qtd, unsigned int dist)
         for(unsigned int j = 0; j < qtd; j++)
         {
             if(i == j) continue;
-            
+
             distancia = sqrt(pow((m[i].x - m[j].x), 2) + pow((m[i].y - m[j].y), 2));
-            if(distancia <= dist) tabela[i][j] = 1;
+            if(distancia <= dist)
+            {
+                tabela[i][j] = 1;
+                *num += 1;
+            }
             else tabela[i][j] = 0;
         }
     }
@@ -581,4 +586,143 @@ void AdicionarMotes(XML* xml, Mote* m, unsigned int qtd, char* mtype1, char* mty
 
         CriarFilhoXML(mote, "motetype_identifier", (i == 0)? mtype1 : mtype2, NULL, 0x00);
     }
+}
+
+/* Esta função cria o script de controle da simulação. Este script é responsável
+ * pela configuração do valor inicial dos enlaces assim como pelo controle
+ * destes valores. */
+void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int num)
+{
+    XML* simconf = PegarTag(xml, "simconf", 0);
+    XML* plugin = CriarFilhoXML(simconf, "plugin", "org.contikios.cooja.plugins.ScriptRunner", NULL, 0x00);
+
+    unsigned int buflen = 1;
+    unsigned int currLink = 0;
+    float link = 0.0;
+    float dist = 0.0;
+
+    char* buffer = (char*) malloc(buflen * sizeof(char));
+    if(buffer == NULL)
+    {
+        printf("\033[%dm\033[%dm", 47, 31);
+        printf("Error creating script (1).\n");
+        printf("\033[%dm", 0);
+        return;
+    }
+
+    char* sbuffer = (char*) malloc(1024 * sizeof(char));
+    if(sbuffer == NULL)
+    {
+        free(buffer);
+        printf("\033[%dm\033[%dm", 47, 31);
+        printf("Error creating script (2).\n");
+        printf("\033[%dm", 0);
+        return;
+    }
+
+    float* valores = (float*) malloc((num / 2) * sizeof(float));
+    if(valores == NULL)
+    {
+        free(buffer);
+        free(sbuffer);
+        printf("\033[%dm\033[%dm", 47, 31);
+        printf("Error creating script (3).\n");
+        printf("\033[%dm", 0);
+        return;
+    }
+
+    buffer[0] = '\0';
+    sbuffer[0] = '\0';
+
+    BufferAdd(&buffer, "var radioMedium = sim.getRadioMedium();\n");
+    BufferAdd(&buffer, "var edges = radioMedium.getEdges();\n\n");
+
+    sprintf(sbuffer, "var edges_values = new Array(%u);\n", num / 2);
+    sprintf(sbuffer, "%svar edges_min = new Array(%u);\n", sbuffer, num / 2);
+    sprintf(sbuffer, "%svar edges_max = new Array(%u);\n", sbuffer, num / 2);
+    sprintf(sbuffer, "%svar num_edges = %u\n\n", sbuffer, num / 2);
+
+    BufferAdd(&buffer, sbuffer);
+
+    for(unsigned int i = 0; i < qtd; i++)
+    {
+        for(unsigned int j = 0; j < qtd; j++)
+        {
+            if(tabela[i][j] == -1)
+            {
+                dist = sqrt(pow((m[i].x - m[j].x), 2) + pow((m[i].y - m[j].y), 2));
+                link = (dist <= 1.0)? 1.0 : 1 / sqrt(dist);
+                sprintf(sbuffer, "edges_values[%u] = %.5f;\n", currLink, link);
+                valores[currLink++] = link;
+
+                BufferAdd(&buffer, sbuffer);
+            }
+        }
+    }
+
+    BufferAdd(&buffer, "\n");
+    currLink = 0;
+
+    for(unsigned int i = 0; i < qtd; i++)
+    {
+        for(unsigned int j = 0; j < qtd; j++)
+        {
+            if(tabela[i][j] == -1)
+            {
+                link = valores[currLink] * 0.9;
+                sprintf(sbuffer, "edges_min[%u] = %.5f;\n", currLink++, link);
+
+                BufferAdd(&buffer, sbuffer);
+            }
+        }
+    }
+
+    BufferAdd(&buffer, "\n");
+    currLink = 0;
+
+    for(unsigned int i = 0; i < qtd; i++)
+    {
+        for(unsigned int j = 0; j < qtd; j++)
+        {
+            if(tabela[i][j] == -1)
+            {
+                link = valores[currLink] * 1.1;
+                sprintf(sbuffer, "edges_max[%u] = %.5f;\n", currLink++, link);
+
+                BufferAdd(&buffer, sbuffer);
+            }
+        }
+    }
+
+    BufferAdd(&buffer, "\nfunction GerarSinal(var l)\n{\n");
+    BufferAdd(&buffer, "\tvar ruido = (Math.random() * 100) % 3;\n");
+    BufferAdd(&buffer, "\truido = ruido * 2 - 2;\n");
+    BufferAdd(&buffer, "\truido /= 100;\n\n");
+    BufferAdd(&buffer, "\tif(edges_values[i] + ruido < edges_min[i])\n\t{\n");
+    BufferAdd(&buffer, "\t\tedges_values[i] = edges_min[i];\n\t}\n");
+    BufferAdd(&buffer, "\telse if(edges_values[i] + ruido > edges_max[i])\n\t{\n");
+    BufferAdd(&buffer, "\t\tedges_values[i] = edges_max[i];\n\t}\n");
+    BufferAdd(&buffer, "\telse\n\t{\n");
+    BufferAdd(&buffer, "\t\tedges_values[i] += ruido;\n\t}\n}\n\n");
+
+    BufferAdd(&buffer, "while(true)\n{\n");
+    BufferAdd(&buffer, "\tYIELD();\n");
+    BufferAdd(&buffer, "\n\tfor(var i = 0; i < num_edges; i++)\n\t{\n");
+    BufferAdd(&buffer, "\t\tGerarSinal(i);\n");
+    BufferAdd(&buffer, "\t\tedges[2 * i].superDest.ratio = edges_values[i];\n");
+    BufferAdd(&buffer, "\t\tedges[2 * i + 1].superDest.ratio = edges_values[i];\n");
+    BufferAdd(&buffer, "\t}\n}");
+
+    XML* plugin_config = CriarFilhoXML(plugin, "plugin_config", "", NULL, 0x00);
+    CriarFilhoXML(plugin_config, "script", buffer, NULL, 0x00);
+    CriarFilhoXML(plugin_config, "active", "true", NULL, 0x00);
+
+    CriarFilhoXML(plugin, "width", "600", NULL, 0x00);
+    CriarFilhoXML(plugin, "height", "700", NULL, 0x00);
+    CriarFilhoXML(plugin, "z", "0", NULL, 0x00);
+    CriarFilhoXML(plugin, "location_x", "710", NULL, 0x00);
+    CriarFilhoXML(plugin, "location_y", "30", NULL, 0x00);
+
+    free(buffer);
+    free(sbuffer);
 }

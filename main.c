@@ -43,10 +43,10 @@ int main(int argc, char** argv)
     raiz = GerarBaseCSC(); // cria um arquivo de simulação vazio
 
     unsigned int amount = 0;
-    char* buf = NULL;
     unsigned int max = 0;
     unsigned int min = 0;
     unsigned int range = 0;
+    unsigned int numenlaces = 0;
 
     // primeira mensagem
     printf("DGRM GENERATOR\n");
@@ -54,16 +54,13 @@ int main(int argc, char** argv)
     amount = GetPos();
 
     printf("Maximum generation distance: "); // ler distância máxima
-    GetBuf;
-    max = (unsigned) atoi(buf);
+    max = GetPos();
 
     printf("Minimum generation distance: "); // ler distância mínima
-    GetBuf;
-    min = (unsigned) atoi(buf);
+    min = GetPos();
 
     printf("Maximum link distance: ");
-    GetBuf;
-    range = (unsigned) atoi(buf);
+    range = GetPos();
 
     printf("Server mtype: ");
     char* server_mtype = Read();
@@ -72,8 +69,9 @@ int main(int argc, char** argv)
     char* client_mtype = Read();
 
     Mote* m = GerarMotes(amount, max, min); // cria e configura uma estrutura de motes
-    int** enlaces = GerarEnlaces(m, amount, range); // configura os enlaces entre os motes
+    int** enlaces = GerarEnlaces(m, amount, range, &numenlaces); // configura os enlaces entre os motes
 
+    // verificação de consistência dos enlaces
     for(int i = 0; i < amount; i++)
     {
         for(int j = 0; j < amount; j++)
@@ -87,7 +85,9 @@ int main(int argc, char** argv)
 
     ImprimirXML(raiz, fp); // imprime o xml num arquivo
 
-    printf("\nCreated simulation %s\n", argv[1]);
+    printf("\nCreated simulation %s with %u nodes and %u links.\n", argv[1], amount, numenlaces);
+
+    GerarScript(raiz, enlaces, m, amount, numenlaces);
 
     return 0;
 }
