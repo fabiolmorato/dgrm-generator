@@ -641,7 +641,7 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     sprintf(sbuffer, "var edges_values = new Array(%u);\n", num / 2);
     sprintf(sbuffer, "%svar edges_min = new Array(%u);\n", sbuffer, num / 2);
     sprintf(sbuffer, "%svar edges_max = new Array(%u);\n", sbuffer, num / 2);
-    sprintf(sbuffer, "%svar num_edges = %u\n\n", sbuffer, num / 2);
+    sprintf(sbuffer, "%svar num_edges = %u;\n\n", sbuffer, num / 2);
 
     BufferAdd(&bufsize, &buffer, sbuffer);
 
