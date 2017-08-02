@@ -4,11 +4,11 @@
 
 char* ftoa(float f)
 {
-    char* buffer = malloc(100 * sizeof(char));
+    char* buffer = calloc(100, sizeof(char));
     sprintf(buffer, "%.2f", f);
 
     int nlen = strlen(buffer);
-    char* r = malloc((nlen + 1) * sizeof(char));
+    char* r = calloc((nlen + 1), sizeof(char));
 
     strncpy(r, buffer, nlen);
     r[nlen] = '\0';
@@ -19,11 +19,11 @@ char* ftoa(float f)
 
 char* uitos(unsigned int f)
 {
-    char* buffer = malloc(100 * sizeof(char));
+    char* buffer = calloc(100, sizeof(char));
     sprintf(buffer, "%u", f);
 
     int nlen = strlen(buffer);
-    char* r = malloc((nlen + 1) * sizeof(char));
+    char* r = calloc((nlen + 1), sizeof(char));
 
     strncpy(r, buffer, nlen);
     r[nlen] = '\0';

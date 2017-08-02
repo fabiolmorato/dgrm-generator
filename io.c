@@ -13,7 +13,7 @@ char* Read(void)
     unsigned int len = 0;
     char c;
 
-    char* buffer = (char*) malloc(bufsize * sizeof(char));
+    char* buffer = (char*) calloc(bufsize, sizeof(char));
     if(buffer == NULL) return NULL;
 
     while((c = fgetc(stdin)) != '\n' && c != EOF)
@@ -35,7 +35,7 @@ char* Read(void)
         buffer[len++] = c;
     }
 
-    char* s = (char*) malloc((len + 1) * sizeof(char));
+    char* s = (char*) calloc((len + 1), sizeof(char));
     if(s == NULL)
     {
         free(buffer);
@@ -59,7 +59,7 @@ char* FormatSpacement(char* s)
     size_t len = strlen(s);
     unsigned int index = 0;
 
-    char* buffer = (char*) malloc((len + 1) * sizeof(char));
+    char* buffer = (char*) calloc((len + 1), sizeof(char));
     if(buffer == NULL) return NULL;
 
     bool firstc = false; // first char found
@@ -80,7 +80,7 @@ char* FormatSpacement(char* s)
         }
     }
 
-    char* r = (char*) malloc((index + 1) * sizeof(char));
+    char* r = (char*) calloc((index + 1), sizeof(char));
     if(r == NULL)
     {
         free(buffer);

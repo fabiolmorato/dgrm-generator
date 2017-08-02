@@ -9,7 +9,7 @@
  * tag XML específica. */
 XML* CriarXML()
 {
-    XML* xml = (XML*) malloc(sizeof(XML)); // estrutura a ser retornada
+    XML* xml = (XML*) calloc(1, sizeof(XML)); // estrutura a ser retornada
     if(xml == NULL) return NULL; // erro de alocação de memória
 
     // configuração da estrutura
@@ -33,11 +33,17 @@ XML* CriarXML()
  * tag anterior pai, atributos (e valores) a e tipo t (definido no cabeçalho) */
 XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
 {
+    if(pai == NULL)
+    {
+        printf("New XML tag parent unespecified.\n");
+        return NULL;
+    }
+
     XML* xml = NULL; // estrutura a ser retornada
 
     if(pai->prox == NULL) // não tem filhos
     {
-        xml = (XML*) malloc(sizeof(XML));
+        xml = (XML*) calloc(1, sizeof(XML));
         if(xml == NULL)
         {
             printf("No memory for new XML tag!\n");
@@ -54,7 +60,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
         xml = &pai->prox[pai->numfilhos];
     }
 
-    pai->numfilhos++;
+    pai->numfilhos += 1;
 
     xml->ant = pai; // nível anterior
 

@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     }
 
     printf("Creating empty simulation...\n");
-    XML* raiz;
+    XML* raiz = NULL;
     raiz = GerarBaseCSC(); // cria um arquivo de simulação vazio
     printf("Created!\n");
 

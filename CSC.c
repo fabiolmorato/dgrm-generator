@@ -133,7 +133,7 @@ XML* SimulationTag(XML* pai, char* t, char* rs)
  * completa. */
 XML* BasePlugin(XML* pai, char* p, char* w, char* h, char* z, char* x, char* y)
 {
-    char* s = malloc((29 + strlen(p)) * sizeof(char));
+    char* s = calloc((29 + strlen(p)), sizeof(char));
     sprintf(s, "org.contikios.cooja.plugins.%s", p);
 
     XML* plugin = CriarFilhoXML(pai, "plugin", s, NULL, 0x00);
@@ -152,7 +152,7 @@ XML* BasePlugin(XML* pai, char* p, char* w, char* h, char* z, char* x, char* y)
  * alcance de pelo menos um dos motes. */
 Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
 {
-    Mote* motes = malloc(qtd * sizeof(Mote));
+    Mote* motes = calloc(qtd, sizeof(Mote));
     if(motes == NULL) fechar("Erro ao alocar Motes.\n");
 
     unsigned int seed = time(NULL);
@@ -430,12 +430,12 @@ Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
  * acordo com a distância máxima (dist). */
 int** GerarEnlaces(Mote* m, unsigned int qtd, unsigned int dist, unsigned int* num)
 {
-    int** tabela = (int**) malloc(qtd * sizeof(int*));
+    int** tabela = (int**) calloc(qtd, sizeof(int*));
     if(tabela == NULL) return NULL;
 
     for(unsigned int i = 0; i < qtd; i++)
     {
-        tabela[i] = (int*) malloc(qtd * sizeof(int));
+        tabela[i] = (int*) calloc(qtd, sizeof(int));
 
         if(tabela[i] == NULL)
         {
@@ -527,39 +527,39 @@ void AdicionarMotes(XML* xml, Mote* m, unsigned int qtd, char* mtype1, char* mty
         CriarFilhoXML(simulation, "motetype", "org.contikios.cooja.contikimote.ContikiMoteType", NULL, 0x00)
     };
 
-    CriarFilhoXML(mt[0], "identifier", mtype1, NULL, 0x00);
-    CriarFilhoXML(mt[1], "identifier", mtype2, NULL, 0x00);
+    if(CriarFilhoXML(mt[0], "identifier", mtype1, NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+    if(CriarFilhoXML(mt[1], "identifier", mtype2, NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
 
-    CriarFilhoXML(mt[0], "description", "Cooja Server", NULL, 0x00);
-    CriarFilhoXML(mt[1], "description", "Cooja Client", NULL, 0x00);
+    if(CriarFilhoXML(mt[0], "description", "Cooja Server", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+    if(CriarFilhoXML(mt[1], "description", "Cooja Client", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
 
-    CriarFilhoXML(mt[0], "source", "[CONTIKI_DIR]/examples/ipv6/rpl-udp/udp-server.c", NULL, 0x00);
-    CriarFilhoXML(mt[1], "source", "[CONTIKI_DIR]/examples/ipv6/rpl-udp/udp-client.c", NULL, 0x00);
+    if(CriarFilhoXML(mt[0], "source", "[CONTIKI_DIR]/examples/ipv6/rpl-udp/udp-server.c", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+    if(CriarFilhoXML(mt[1], "source", "[CONTIKI_DIR]/examples/ipv6/rpl-udp/udp-client.c", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
 
-    CriarFilhoXML(mt[0], "commands", "make udp-server.cooja TARGET=cooja", NULL, 0x00);
-    CriarFilhoXML(mt[1], "commands", "make udp-client.cooja TARGET=cooja", NULL, 0x00);
+    if(CriarFilhoXML(mt[0], "commands", "make udp-server.cooja TARGET=cooja", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+    if(CriarFilhoXML(mt[1], "commands", "make udp-client.cooja TARGET=cooja", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
 
     // adicionando propriedades comuns
     for(int i = 0; i < 2; i++)
     {
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Position", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Battery", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.RimeAddress", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Mote2Relations", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.MoteAttributes", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiVib", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiMoteID", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiRS232", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiBeeper", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiIPAddress", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiRadio", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiButton", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiPIR", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiClock", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiLED", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiCFS", NULL, 0x00);
-        CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiEEPROM", NULL, 0x00);
-        CriarFilhoXML(mt[i], "symbols", "false", NULL, 0x00);
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Position", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Battery", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.RimeAddress", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.Mote2Relations", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.interfaces.MoteAttributes", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiVib", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiMoteID", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiRS232", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiBeeper", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiIPAddress", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiRadio", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiButton", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiPIR", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiClock", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiLED", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiCFS", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "moteinterface", "org.contikios.cooja.contikimote.interfaces.ContikiEEPROM", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
+        if(CriarFilhoXML(mt[i], "symbols", "false", NULL, 0x00) == NULL) fechar("Error creating XML tree.\n");
     }
 
     // adicionando os motes ao XML
@@ -602,7 +602,7 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     float link = 0.0;
     float dist = 0.0;
 
-    char* buffer = (char*) malloc(bufsize * sizeof(char));
+    char* buffer = (char*) calloc(bufsize, sizeof(char));
     if(buffer == NULL)
     {
         printf("\033[%dm\033[%dm", 47, 31);
@@ -611,7 +611,7 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
         return;
     }
 
-    char* sbuffer = (char*) malloc(1024 * sizeof(char));
+    char* sbuffer = (char*) calloc(1024, sizeof(char));
     if(sbuffer == NULL)
     {
         free(buffer);
@@ -621,7 +621,7 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
         return;
     }
 
-    float* valores = (float*) malloc((num / 2) * sizeof(float));
+    float* valores = (float*) calloc(qtd * qtd, sizeof(float));
     if(valores == NULL)
     {
         free(buffer);
@@ -695,20 +695,20 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
         }
     }
 
-    BufferAdd(&bufsize, &buffer, "\nfunction GerarSinal(var l)\n{\n");
+    BufferAdd(&bufsize, &buffer, "\nfunction GerarSinal(l)\n{\n");
     BufferAdd(&bufsize, &buffer, "\tvar ruido = (Math.random() * 100) % 3;\n");
     BufferAdd(&bufsize, &buffer, "\truido = ruido * 2 - 2;\n");
     BufferAdd(&bufsize, &buffer, "\truido /= 100;\n\n");
-    BufferAdd(&bufsize, &buffer, "\tif(edges_values[i] + ruido < edges_min[i])\n\t{\n");
+    BufferAdd(&bufsize, &buffer, "\tif(edges_values[i] + ruido &lt; edges_min[i])\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges_values[i] = edges_min[i];\n\t}\n");
-    BufferAdd(&bufsize, &buffer, "\telse if(edges_values[i] + ruido > edges_max[i])\n\t{\n");
+    BufferAdd(&bufsize, &buffer, "\telse if(edges_values[i] + ruido &gt; edges_max[i])\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges_values[i] = edges_max[i];\n\t}\n");
     BufferAdd(&bufsize, &buffer, "\telse\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges_values[i] += ruido;\n\t}\n}\n\n");
 
     BufferAdd(&bufsize, &buffer, "while(true)\n{\n");
     BufferAdd(&bufsize, &buffer, "\tYIELD();\n");
-    BufferAdd(&bufsize, &buffer, "\n\tfor(var i = 0; i < num_edges; i++)\n\t{\n");
+    BufferAdd(&bufsize, &buffer, "\n\tfor(var i = 0; i &lt; num_edges; i++)\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tGerarSinal(i);\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges[2 * i].superDest.ratio = edges_values[i];\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges[2 * i + 1].superDest.ratio = edges_values[i];\n");
@@ -729,14 +729,14 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
         return;
     }
 
-    ImprimirXML(plugin, stdout);
+    CriarFilhoXML(plugin_config, "script", buffer, NULL, 0x00);
     CriarFilhoXML(plugin_config, "active", "true", NULL, 0x00);
-    //
-    // CriarFilhoXML(plugin, "width", "600", NULL, 0x00);
-    // CriarFilhoXML(plugin, "height", "700", NULL, 0x00);
-    // CriarFilhoXML(plugin, "z", "0", NULL, 0x00);
-    // CriarFilhoXML(plugin, "location_x", "710", NULL, 0x00);
-    // CriarFilhoXML(plugin, "location_y", "30", NULL, 0x00);
+
+    CriarFilhoXML(plugin, "width", "600", NULL, 0x00);
+    CriarFilhoXML(plugin, "height", "700", NULL, 0x00);
+    CriarFilhoXML(plugin, "z", "0", NULL, 0x00);
+    CriarFilhoXML(plugin, "location_x", "710", NULL, 0x00);
+    CriarFilhoXML(plugin, "location_y", "30", NULL, 0x00);
 
     printf("Script added to simulation!\n");
 }
