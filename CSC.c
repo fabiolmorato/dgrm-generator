@@ -723,6 +723,5 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     CriarFilhoXML(plugin, "location_x", "710", NULL, 0x00);
     CriarFilhoXML(plugin, "location_y", "30", NULL, 0x00);
 
-    free(buffer);
     free(sbuffer);
 }
