@@ -11,6 +11,20 @@ After that, run the dgrm-generator program (syntax shown below), insert the numb
 
 Usage: `./main <filename>`
 Will generate one CSC file, fully configured and ready do be tested.
+Also `./main -h` or `./main --help` will show a help dialog.
+
+## Files
+XML.c and XML.h: contain all code needed to create a tree with all information needed for XML code, creating a file, adding elements, finding elements by name and writing the XML file.
+
+CSC.c and CSC.h: hold code needed to create a basic Cooja simulation using DGRM as Radio Medium. Has the structure to hold motes information, random positioning, creation of links and functions to take all that information and store it inside a XML tree, using XML library.
+
+helpers.c and helpers.h: functions created in order to ease the writing of this project. There's a chance that those exist.
+
+io.c and io.h: library in which are the functions used to get information from user and treat such information.
+
+macros.h: macros to help implementation of project.
+
+main.c: main file, where everything happens.
 
 ## Credits
 Created by Fábio Lino Morato in DCC-UFMG (Computer Science Department - Federal University of Minas Gerais, Brazil).
