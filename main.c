@@ -49,6 +49,9 @@ int main(int argc, char** argv)
     unsigned int min = 0;
     unsigned int range = 0;
     unsigned int numenlaces = 0;
+    unsigned char tipo = 0;
+    float rayleigh_a = 0.0;
+    char* read_s = NULL;
 
     // primeira mensagem
     printf("DGRM GENERATOR\n");
@@ -69,6 +72,20 @@ int main(int argc, char** argv)
 
     printf("Client mtype: ");
     char* client_mtype = Read();
+
+    getrx:
+    printf("RX value generation descriptor (0/1): ");
+    tipo = (unsigned char) GetPos();
+    if(tipo < 0 || tipo > 1) goto getrx;
+
+    if(tipo == 1)
+    {
+      printf("Rayleigh a: ");
+      read_s = Read();
+      rayleigh_a = (float) atof(read_s);
+      free(read_s);
+      SetRayleigh(rayleigh_a);
+    }
 
     printf("\nCreating motes...");
     Mote* m = GerarMotes(amount, max, min); // cria e configura uma estrutura de motes
@@ -95,7 +112,7 @@ int main(int argc, char** argv)
     printf("Added!\n");
 
     printf("\nGenerating script...\n");
-    GerarScript(raiz, enlaces, m, amount, numenlaces);
+    GerarScript(raiz, enlaces, m, amount, numenlaces, tipo);
 
     ImprimirXML(raiz, fp); // imprime o xml num arquivo
 

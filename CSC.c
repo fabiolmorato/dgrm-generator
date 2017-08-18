@@ -14,6 +14,12 @@
 #include "helpers.h"
 
 unsigned int g_seed = (unsigned) -1;
+float g_rayleigh_a = 16.0;
+
+void SetRayleigh(float v)
+{
+  g_rayleigh_a = v;
+}
 
 int GerarVar(unsigned int max, unsigned int min, bool r)
 {
@@ -430,7 +436,7 @@ Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
  * acordo com a distância máxima (dist). */
 int** GerarEnlaces(Mote* m, unsigned int qtd, unsigned int dist, unsigned int* num)
 {
-    int** tabela = (int**) calloc(qtd, sizeof(int*));
+    int** tabela = calloc(qtd, sizeof(int*));
     if(tabela == NULL) return NULL;
 
     for(unsigned int i = 0; i < qtd; i++)
@@ -591,7 +597,7 @@ void AdicionarMotes(XML* xml, Mote* m, unsigned int qtd, char* mtype1, char* mty
 /* Esta função cria o script de controle da simulação. Este script é responsável
  * pela configuração do valor inicial dos enlaces assim como pelo controle
  * destes valores. */
-void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int num)
+void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int num, unsigned char tipo)
 {
     XML* simconf = PegarTag(xml, "simconf", 0);
     XML* plugin = CriarFilhoXML(simconf, "plugin", "org.contikios.cooja.plugins.ScriptRunner", NULL, 0x00);
@@ -652,7 +658,9 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
             if(tabela[i][j] == -1)
             {
                 dist = sqrt(pow((m[i].x - m[j].x), 2) + pow((m[i].y - m[j].y), 2));
-                link = (dist <= 1.0)? 1.0 : 1 / sqrt(dist);
+                if(tipo == 0) link = (dist <= 1.0)? 1.0 : 1 / sqrt(sqrt(dist));
+                else if(tipo == 1) link = pow(2.7182818, (-1)*pow(dist, 2) / (2 * pow(g_rayleigh_a, 2)));
+                else link = 1.0;
                 sprintf(sbuffer, "edges_values[%u] = %.5f;\n", currLink, link);
                 valores[currLink++] = link;
 

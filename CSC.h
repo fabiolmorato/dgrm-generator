@@ -28,6 +28,8 @@ int** GerarEnlaces(Mote*, unsigned int, unsigned int, unsigned int*);
 void AdicionarEnlaces(XML*, int**, unsigned int);
 void AdicionarMotes(XML*, Mote*, unsigned int, char*, char*);
 
-void GerarScript(XML*, int**, Mote*, unsigned int, unsigned int);
+void GerarScript(XML*, int**, Mote*, unsigned int, unsigned int, unsigned char);
+
+void SetRayleigh(float);
 
 #endif
