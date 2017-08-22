@@ -170,7 +170,7 @@ Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
     motes[0].x = 0.0;
     motes[0].y = 0.0;
     motes[0].z = 0.0;
-    motes[0].id = 0;
+    motes[0].id = 1;
     motes[0].tipo = "mtype0";
 
     motes[0].up = NULL;
@@ -183,7 +183,7 @@ Mote* GerarMotes(unsigned int qtd, unsigned int max, unsigned int min)
         motes[i].x = 0.0;
         motes[i].y = 0.0;
         motes[i].z = 0.0;
-        motes[i].id = i;
+        motes[i].id = i + 1;
         motes[i].tipo = "mtype1";
 
         motes[i].up = NULL;
