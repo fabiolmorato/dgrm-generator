@@ -52,7 +52,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
 
         pai->prox = xml;
     }
-    else // tem filhos
+    else // tem filhos, realocando memória para mais um filho
     {
         pai->prox = realloc(pai->prox, (pai->numfilhos + 1) * sizeof(XML));
         if(pai->prox == NULL) return NULL; // problema de alocação de memória
@@ -60,6 +60,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
         xml = &pai->prox[pai->numfilhos];
     }
 
+    // inicializando o filho e reconfigurando o pai
     pai->numfilhos += 1;
 
     xml->ant = pai; // nível anterior
@@ -113,6 +114,8 @@ XML* PegarTagPorValor(XML* contexto, char* nome, char* valor, int ocorrencia)
 void EscreverXML(FILE* f, XML* xml)
 {
     // TODO
+    /* Esta função deixou de ser escrita pela modificação criada na ImprimirXML,
+     * na qual pode-se receber o arquivo no qual será impresso a estrutura. */
     return;
 }
 
@@ -120,7 +123,7 @@ void EscreverXML(FILE* f, XML* xml)
  * hierarquicamente. */
 void ImprimirXML(XML* xml, FILE* f)
 {
-    if(xml->nivel == 0)
+    if(xml->nivel == 0) // verifica se foi dada a raíz do documento
     {
         for(int i = 0; i < xml->numfilhos; i++)
         {
@@ -130,7 +133,7 @@ void ImprimirXML(XML* xml, FILE* f)
         return;
     }
 
-    for(int i = 1; i < xml->nivel; i++)
+    for(int i = 1; i < xml->nivel; i++) // cuida da indentação
     {
         fputc(' ', f);
         fputc(' ', f);

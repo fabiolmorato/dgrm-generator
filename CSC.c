@@ -1,3 +1,10 @@
+/* Boa parte deste código escreve a estrutura XML de uma simulação Cooja usando
+ * DGRM como Radio Medium, completamente vazia. Algumas funções são para a
+ * criação de tags que contém boa parte delas iguais/constantes, como BasePlugin
+ * É necessário entender como funciona o código de XML.c.
+ * A estratégia para geração de posição "aleatória" dos nós é a seguinte:
+ *  */
+
 #define PRINTF(...) //printf(__VA_ARGS__)
 #define DEBUG(...) //printf(__VA_ARGS__)
 
@@ -13,14 +20,19 @@
 #include "macros.h"
 #include "helpers.h"
 
+// variáveis globais
 unsigned int g_seed = (unsigned) -1;
 float g_rayleigh_a = 16.0;
 
+// configura uma variável global
 void SetRayleigh(float v)
 {
   g_rayleigh_a = v;
 }
 
+/* Esta função gera uma variação para a simulação dentro do alcance permitido.
+ * Seus parâmetros são max -> distância máxima; min -> distância mínima
+ * r -> se true, gera valor num alcance [-,+] e se false valor positivo. */
 int GerarVar(unsigned int max, unsigned int min, bool r)
 {
     if(g_seed == (unsigned) -1) g_seed = (unsigned) time(NULL);
