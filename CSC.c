@@ -656,10 +656,10 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     BufferAdd(&bufsize, &buffer, "var radioMedium = sim.getRadioMedium();\n");
     BufferAdd(&bufsize, &buffer, "var edges = radioMedium.getEdges();\n\n");
 
-    sprintf(sbuffer, "var edges_values = new Array(%u);\n", num / 2);
-    sprintf(sbuffer, "%svar edges_min = new Array(%u);\n", sbuffer, num / 2);
-    sprintf(sbuffer, "%svar edges_max = new Array(%u);\n", sbuffer, num / 2);
-    sprintf(sbuffer, "%svar num_edges = %u;\n\n", sbuffer, num / 2);
+    sprintf(sbuffer, "var edges_values = new Array(%u);\n", num);
+    sprintf(sbuffer, "%svar edges_min = new Array(%u);\n", sbuffer, num);
+    sprintf(sbuffer, "%svar edges_max = new Array(%u);\n", sbuffer, num);
+    sprintf(sbuffer, "%svar num_edges = %u;\n\n", sbuffer, num);
 
     BufferAdd(&bufsize, &buffer, sbuffer);
 
