@@ -750,7 +750,7 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     BufferAdd(&bufsize, &buffer, "\t\tif(msg.indexOf(\"send to\") &gt; -1) sendCount += 1;\n");
     BufferAdd(&bufsize, &buffer, "\t\telse if(msg.indexOf(\"recv 'Hello\") &gt; -1) recvCount += 1;\n\t}\n\n");
     BufferAdd(&bufsize, &buffer, "\tif(time &gt;= 999999999)\n\t{\n");
-    BufferAdd(&bufsize, &buffer, "\t\tlog.log(sendCount + \" \" + recvCount + \"\\n\")");
+    BufferAdd(&bufsize, &buffer, "\t\tlog.log(sendCount + \" \" + recvCount + \"\\n\");\n");
     BufferAdd(&bufsize, &buffer, "\t\tlog.testOK();\n\t\tsim.stopSimulation();\n\t}\n\n");
     BufferAdd(&bufsize, &buffer, "\n\tfor(var i = 0; i &lt; num_edges; i++)\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tGerarSinal(i);\n");
