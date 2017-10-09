@@ -15,6 +15,4 @@
 
 #define PluginConfig(a) CriarFilhoXML(a, "plugin_config", "", NULL, 0x00);
 
-#define GetBuf {if(buf!=NULL)free(buf);buf=Read();}
-
 #endif

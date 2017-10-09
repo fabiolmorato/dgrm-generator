@@ -26,7 +26,7 @@ XML;
  * tag XML aqui, pois na escrita a raíz é ignorada.
  * Entenda a estrutura como que a raíz fosse todo o documento XML, não uma
  * tag XML específica. */
-XML* CriarXML();
+XML* CriarXML(void);
 
 /* Esta função cria uma tag XML na estrutura, tem nome n, valor v,
  * contexto pai, atributos (e valores) a e tipo t (definido no cabeçalho) */

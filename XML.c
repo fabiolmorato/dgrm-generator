@@ -7,7 +7,7 @@
  * tag XML aqui, pois na escrita a raíz é ignorada.
  * Entenda a estrutura como que a raíz fosse todo o documento XML, não uma
  * tag XML específica. */
-XML* CriarXML()
+XML* CriarXML(void)
 {
     XML* xml = (XML*) calloc(1, sizeof(XML)); // estrutura a ser retornada
     if(xml == NULL) return NULL; // erro de alocação de memória
@@ -43,7 +43,7 @@ XML* CriarFilhoXML(XML* pai, char* n, char* v, char* a, BYTE t)
 
     if(pai->prox == NULL) // não tem filhos
     {
-        xml = calloc(1, sizeof(XML));
+        xml = (XML*) calloc(1, sizeof(XML));
         if(xml == NULL)
         {
             printf("No memory for new XML tag!\n");
