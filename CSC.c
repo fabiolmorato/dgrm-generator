@@ -653,6 +653,11 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     buffer[0] = '\0';
     sbuffer[0] = '\0';
 
+    BufferAdd(&bufsize, &buffer, "TIMEOUT(9999999999999999);\n\n");
+    BufferAdd(&bufsize, &buffer, "var sendCount = 0;\n");
+    BufferAdd(&bufsize, &buffer, "var recvCount = 0;\n");
+    BufferAdd(&bufsize, &buffer, "var sreplyCount = 0;\n");
+    BufferAdd(&bufsize, &buffer, "var rreplyCount = 0;\n\n");
     BufferAdd(&bufsize, &buffer, "var radioMedium = sim.getRadioMedium();\n");
     BufferAdd(&bufsize, &buffer, "var edges = radioMedium.getEdges();\n\n");
 
@@ -676,6 +681,9 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
                 sprintf(sbuffer, "edges_values[%u] = %.5f;\n", currLink, link);
                 valores[currLink++] = link;
 
+                tabela[i][j] = 1;
+                tabela[j][i] = 1;
+
                 BufferAdd(&bufsize, &buffer, sbuffer);
             }
         }
@@ -688,12 +696,15 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     {
         for(unsigned int j = 0; j < qtd; j++)
         {
-            if(tabela[i][j] == -1)
+            if(tabela[i][j] == 1)
             {
                 link = valores[currLink] - var;
                 if(link < 0.0) link = 0.0;
                 sprintf(sbuffer, "edges_min[%u] = %.5f;\n", currLink++, link);
 
+                tabela[i][j] = -1;
+                tabela[j][i] = -1;
+
                 BufferAdd(&bufsize, &buffer, sbuffer);
             }
         }
@@ -708,18 +719,23 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
         {
             if(tabela[i][j] == -1)
             {
-                link = valores[currLink]  + var;
+                link = valores[currLink] + var;
                 if(link > 1.0) link = 1.0;
                 sprintf(sbuffer, "edges_max[%u] = %.5f;\n", currLink++, link);
+
+                tabela[i][j] = 1;
+                tabela[j][i] = 1;
 
                 BufferAdd(&bufsize, &buffer, sbuffer);
             }
         }
     }
 
-    BufferAdd(&bufsize, &buffer, "\nfunction GerarSinal(l)\n{\n");
-    BufferAdd(&bufsize, &buffer, "\tvar ruido = (Math.random() * 100) % 3;\n");
-    BufferAdd(&bufsize, &buffer, "\truido = ruido * 2 - 2;\n");
+    printf("(%d)", currLink);
+
+    BufferAdd(&bufsize, &buffer, "\nfunction GerarSinal(i)\n{\n");
+    BufferAdd(&bufsize, &buffer, "\tvar ruido = (Math.random() * 100) % 4;\n");
+    BufferAdd(&bufsize, &buffer, "\tif(Math.random() > 0.5) ruido *= -1;\n");
     BufferAdd(&bufsize, &buffer, "\truido /= 100;\n\n");
     BufferAdd(&bufsize, &buffer, "\tif(edges_values[i] + ruido &lt; edges_min[i])\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges_values[i] = edges_min[i];\n\t}\n");
@@ -729,7 +745,13 @@ void GerarScript(XML* xml, int** tabela, Mote* m, unsigned int qtd, unsigned int
     BufferAdd(&bufsize, &buffer, "\t\tedges_values[i] += ruido;\n\t}\n}\n\n");
 
     BufferAdd(&bufsize, &buffer, "while(true)\n{\n");
-    BufferAdd(&bufsize, &buffer, "\tYIELD();\n");
+    BufferAdd(&bufsize, &buffer, "\tYIELD();\n\n");
+    BufferAdd(&bufsize, &buffer, "\tif(msg.indexOf(\"DATA\") &gt; -1)\n\t{\n");
+    BufferAdd(&bufsize, &buffer, "\t\tif(msg.indexOf(\"send to\") &gt; -1) sendCount += 1;\n");
+    BufferAdd(&bufsize, &buffer, "\t\telse if(msg.indexOf(\"recv 'Hello\") &gt; -1) recvCount += 1;\n\t}\n\n");
+    BufferAdd(&bufsize, &buffer, "\tif(time &gt;= 999999999)\n\t{\n");
+    BufferAdd(&bufsize, &buffer, "\t\tlog.log(sendCount + \" \" + recvCount + \"\\n\")");
+    BufferAdd(&bufsize, &buffer, "\t\tlog.testOK();\n\t\tsim.stopSimulation();\n\t}\n\n");
     BufferAdd(&bufsize, &buffer, "\n\tfor(var i = 0; i &lt; num_edges; i++)\n\t{\n");
     BufferAdd(&bufsize, &buffer, "\t\tGerarSinal(i);\n");
     BufferAdd(&bufsize, &buffer, "\t\tedges[2 * i].superDest.ratio = edges_values[i];\n");
