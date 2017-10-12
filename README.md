@@ -1,5 +1,5 @@
 # dgrm-generator
-Generates a Cooja simulation using Direct Graph Radio Medium as Radio Medium. Using Cooja mote type, it has two different motes: server mote and client mote. There will be one server mote and N client motes. This program is used at [Simulações DGRM](https://github.com/fabiolmorato/simulacoes-dgrm).
+Generates a Cooja simulation using Direct Graph Radio Medium as Radio Medium. Using Cooja mote type, it has two different motes: server mote and client mote. There will be one server mote and N client motes. 
 
 ## Compiling
 ```make main```
@@ -12,6 +12,8 @@ After that, run the dgrm-generator program (syntax shown below), insert the numb
 Usage: `./main <filename>`
 Will generate one CSC file, fully configured and ready do be tested.
 Also `./main -h` or `./main --help` will show a help dialog.
+
+After the generated simulation ends (in Cooja), there will be a log file containg the number of messages sent (second line, first row) and number of messages received by sink node (second line, second row). In the line below are the number of replies sent and replies received, respectively.
 
 ## Files
 XML.c and XML.h: contain all code needed to create a tree with all information needed for XML code, creating a file, adding elements, finding elements by name and writing the XML file.
